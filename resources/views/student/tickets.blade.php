@@ -1,0 +1,3 @@
+<x-studentLayout>
+
+</x-studentLayout>

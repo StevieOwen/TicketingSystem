@@ -2,20 +2,28 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+    protected $primaryKey = 'user_id';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    protected $fillable=['user_id','name','email','regnumber','user_name','role','department','password','profile_picture','created_at','updated_at','email_verified_at'];
 
     /**
      * Get the attributes that should be cast.
@@ -29,4 +37,18 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function assignedTickets():Hasmany
+    {
+        return $this->hasMany(Ticket::class,'officer_id', 'user_id');
+    }
+
+     public function submittedTickets():Hasmany
+    {
+        return $this->hasMany(Ticket::class,'student_id', 'user_id');
+    }
+
+
+
+    
 }
