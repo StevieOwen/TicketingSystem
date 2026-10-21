@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['name', 'email', 'password'])]
+
 #[Hidden(['password', 'remember_token'])]
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -38,12 +38,12 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function assignedTickets():Hasmany
+    public function assignedTickets():HasMany
     {
         return $this->hasMany(Ticket::class,'officer_id', 'user_id');
     }
 
-     public function submittedTickets():Hasmany
+     public function submittedTickets():HasMany
     {
         return $this->hasMany(Ticket::class,'student_id', 'user_id');
     }

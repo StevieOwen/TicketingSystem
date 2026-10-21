@@ -6,7 +6,20 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StaffController;
 
 Route::get('/', function () {
-    return redirect()-> route('login');
+    if (auth()->check()) {
+        $user = auth()->user();
+
+        return match ($user->role) {
+            'Admin'                           => redirect()->route('admin.overview'),
+            'Academic officer', 
+            'Finance officer', 
+            'IT officer'                      => redirect()->route('staffs.overview'),
+            'Student'                         => redirect()->route('students.overview'),
+            default                           => redirect()->route('students.overview'),
+        };
+    }
+
+    return redirect()->route('login');
 });
 
 Route::middleware('auth')->group(function() {
@@ -32,6 +45,7 @@ Route::middleware('auth')->group(function() {
         Route::get('student/overview','overview')->name('students.overview');
         Route::post('student/create/ticket','createTicket')->name('students.tickets_create');
         Route::patch('student/update/ticket/{ticket}','updateTicket')->name('students.tickets_update');
+        Route::get('student/settings','settings')->name('students.settings');
         Route::patch('student/update/student/{user}','updateStudent')->name('students.students_update');
         Route::patch('student/updatepassword/student/{user}','updateStudentPassword')->name('students.student_password_update');
 
@@ -43,6 +57,9 @@ Route::middleware('auth')->group(function() {
         Route::get('staff/overview','overview')->name('staffs.overview');
 
         Route::patch('staff/ticket/{ticket}/update','updateTicket')->name('staffs.ticket.update');
+
+        Route::get('staff/settings','settings')->name('staffs.settings');
+        Route::patch('staff/{user}/update','updateStaff')->name('staffs.staff_update');
 
     });
 });

@@ -33,7 +33,7 @@
         <!-- Registration Form -->
         <form
             method="POST"
-            action="{{ route('register') }}"
+            action="{{ route('register.store') }}"
             x-on:submit="submitForm($event)"
             class="space-y-5"
         >

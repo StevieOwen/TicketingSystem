@@ -5,6 +5,8 @@ use App\Models\User;
 use App\Models\Ticket;
 use App\Models\TicketLog;
 use App\Services\StaffService;
+use App\Services\TicketService;
+use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -45,7 +47,8 @@ class AdminController extends Controller
         ]);
         $user_id=\Illuminate\Support\Str::uuid();
 
-        $staffService->storeStaff(
+        try{
+            $staffService->storeStaff(
             $user_id,
             $request->name,
             $request->email,
@@ -58,6 +61,17 @@ class AdminController extends Controller
         return back()
             ->withInput()
             ->with('success','New staff added successfully');
+
+        }catch (\Exception $e) {
+             // Log actual error for debugging
+            Log::error('Staff creation failed: ' . $e->getMessage());
+
+            // Return back to form with input data and a generic error message
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to create the new staff. Please try again.'. $e->getMessage());
+        }
+        
 
     }
 
@@ -75,7 +89,8 @@ class AdminController extends Controller
             'status' => 'required|in:active,inactive',
         ]);
         
-        $staffService->updateStaff(
+        try{
+            $staffService->updateStaff(
             $user,
            [
             $request->status,
@@ -85,19 +100,40 @@ class AdminController extends Controller
             ]
         );
         
-        return back()
-            ->withInput()
-            ->with('success',"Staff updated successfully");
+            return back()
+                ->withInput()
+                ->with('success',"Staff updated successfully");
+
+        }catch(\Exception $e){
+            // Log actual error for debugging
+            Log::error('Staff update failed: ' . $e->getMessage());
+
+            // Return back to form with input data and a generic error message
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to update staff. Please try again.'. $e->getMessage());
+        }
+        
+    }
         
 
-    }
-
     public function staffDelete(User $user, StaffService $staffService){
-        $staffService->deleteStaff($user);
+        try{
+            $staffService->deleteStaff($user);
 
-        return back()
+            return back()
                 ->withInput()
                 ->with('success','Staff deleted successfully');
+        }catch(\Exception $e){
+            // Log actual error for debugging
+            Log::error('Staff deletion failed: ' . $e->getMessage());
+
+            // Return back to form with input data and a generic error message
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to delete staff. Please try again.'. $e->getMessage());
+        }
+      
     }
 
 
@@ -118,8 +154,8 @@ class AdminController extends Controller
             'status' => 'required|in:pending,accepted,processing,done,rejected',
             'officer_id'=>''
         ]);
-        
-        $ticketService->updateTicket(
+        try{
+            $ticketService->updateTicket(
             $ticket,
             [$request->status,
             $request->officer_id,]
@@ -128,6 +164,16 @@ class AdminController extends Controller
         return back()
             ->withInput()
             ->with('success',"Staff updated successfully");
+        }catch(\Exception $e){
+            // Log actual error for debugging
+            Log::error('Ticket update failed: ' . $e->getMessage());
+
+            // Return back to form with input data and a generic error message
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to update ticket. Please try again.'. $e->getMessage());
+        }
+        
         
     }
 
@@ -148,8 +194,8 @@ class AdminController extends Controller
             'department' => ['required', 'string', 'max:255'],
             'status' => 'required|in:active,inactive',
         ]);
-        
-        $studentService->updateStudent(
+        try{
+            $studentService->updateStudent(
             $user,
             [
              $request->status,
@@ -160,7 +206,17 @@ class AdminController extends Controller
         
         return back()
             ->withInput()
-            ->with('success',"Staff updated successfully");
+            ->with('success',"Student updated successfully");
+        }catch(\Exception $e){
+            // Log actual error for debugging
+            Log::error('Student update failed: ' . $e->getMessage());
+
+            // Return back to form with input data and a generic error message
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to update student. Please try again.'. $e->getMessage());
+        }
+        
     }
 
     public function settings(){

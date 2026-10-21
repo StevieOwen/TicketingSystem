@@ -32,7 +32,7 @@ class CreateNewUser implements CreatesNewUsers
                 'max:255',
                 Rule::unique(User::class),
             ],
-            'regNumber' => [
+            'regnumber' => [
                 'required',
                 'string',
                 'max:255',
@@ -44,13 +44,14 @@ class CreateNewUser implements CreatesNewUsers
         ])->validate();
         $user_id=\Illuminate\Support\Str::uuid();
 
-        $service=new StudentService;
+        $studentService=new StudentService();
+      
 
-        return $service->createStudent(
+        return $studentService->createStudent(
             $user_id,
             $input['name'],
             $input['email'],
-            $input['regNumber'],
+            $input['regnumber'],
             $input['department'],
             $input['password']
         );

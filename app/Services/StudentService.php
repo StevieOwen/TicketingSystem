@@ -6,17 +6,17 @@ use Illuminate\Support\Facades\Hash;
 
 class StudentService{
 
-    public function createStudent($user_id,$name,$email,$regNumber,$department,$password){
+    public function createStudent($user_id,$name,$email,$regnumber,$department,$password){
         
         $user=new User;
 
         $user->user_id=$user_id;
         $user->name=$name;
         $user->email=$email;
-        $user->regNumber=$regNumber;
+        $user->regnumber=$regnumber;
         $user->department=$department;
         $user->password=Hash::make($password);
-        $user->role='student';
+        $user->role='Student';
         $user->save();
 
         return $user;

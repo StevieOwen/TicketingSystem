@@ -95,7 +95,7 @@ class FortifyServiceProvider extends ServiceProvider
             public function toResponse($request)
             {
                 
-                redirect()->route('login')->with('status', 'Email verified successfully!');
+                return redirect()->route('login')->with('status', 'Email verified successfully!');
                                 
             }
         });
@@ -108,11 +108,11 @@ class FortifyServiceProvider extends ServiceProvider
                 // Check user roles and redirect to appropriate named routes
                 return match ($user->role) {
                     'Admin'    => redirect()->route('admin.overview'),
-                    'Academic officer'   => redirect()->route('staff.overview'),
-                    'Student' => redirect()->route('student.overview'),
-                    'Finance officer' => redirect()->route('staff.overview'),
-                    'IT officer' => redirect()->route('staff.overview'),
-                    default    => redirect()->route('student.overview'),
+                    'Academic officer'   => redirect()->route('staffs.overview'),
+                    'Student' => redirect()->route('students.overview'),
+                    'Finance officer' => redirect()->route('staffs.overview'),
+                    'IT officer' => redirect()->route('staffs.overview'),
+                    default    => redirect()->route('students.overview'),
                 };
             }     
         });
